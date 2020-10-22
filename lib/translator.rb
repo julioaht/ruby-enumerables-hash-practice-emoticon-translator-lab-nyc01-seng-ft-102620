@@ -3,30 +3,33 @@ require 'pry'
 
 # require modules here
 
-def load_library(yaml_file)
-  response = {"get_meaning" => {}, "get_emoticon" => {}}
-  library = YAML.load_file(yaml_file)
-  library.each do |trans, emos|
-    response["get_meaning"][emos[1]] = trans
-    response["get_emoticon"][emos[0]] = emos[1]
+def load_library(path)
+  emoji_hash = {}
+  emoji_hash["get_meaning"] = {}
+  emoji_hash["get_emoticon"] = {}
+  emoji = YAML.load_file(path)
+  emoji.each do |word, emojis|
+    emoji_hash["get_meaning"][emojis[1]] = word
+    emoji_hash["get_emoticon"][emojis[0]] = emojis[1]
   end
-  response
+  emoji_hash
 end
 
 def get_japanese_emoticon(path, emoticon)
-  emoticon_hash = load_library(path)
-  result = emoticon_hash["get_emoticon"][emoticon]
-  if result == nil
-    result = "Sorry, that emoticon was not found"
+  emoji = load_library(path)
+  if emoji["get_emoticon"].has_key?(emoticon)
+    emoji["get_emoticon"][emoticon]
+  else
+    return "Sorry, that emoticon was not found"
   end
-  result
 end
 
+
 def get_english_meaning(path, emoticon)
-  emoticon_hash = load_library(path)
-  result = emoticon_hash["get_meaning"][emoticon]
-  if result == nil
-    result = "Sorry, that emoticon was not found"
+  emoji = load_library(path)
+  if emoji["get_meaning"].has_key?(emoticon)
+    emoji["get_meaning"][emoticon]
+  else
+    return "Sorry, that emoticon was not found"
   end
-  result
 end
